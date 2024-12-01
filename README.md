@@ -8,6 +8,6 @@ Percolation is one of the most interesting model proposed in the framework of St
 
 In a percolation model, we can construct a function $C : Z^d \times Z^d \rightarrow \{0,1\}$ that describes if two random variables belong to the same cluster, according to the condition
 
-\begin{equation}
+$$
 C((i_1,i_2,...,i_d),(i'_1,i'_2,...,i'_d)) = 1
-\end{equation}
+$$
