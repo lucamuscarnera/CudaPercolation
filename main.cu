@@ -1,8 +1,7 @@
 #include <iostream>
-#include "headers/test.h"
+#include "headers/Lattice.h"
 
 int main()
 {
 	std::cout << "Ciao Mondo!" << std::endl;
-	std::cout << test() << std::endl;
 }
