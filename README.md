@@ -11,3 +11,5 @@ In a percolation model, we can construct a function $C : Z^d \times Z^d \rightar
 $$
 C((i_1,i_2,...,i_d),(i'_1,i'_2,...,i'_d)) = 1
 $$
+
+Our objective is twofold:
