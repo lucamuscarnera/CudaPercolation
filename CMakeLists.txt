@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.18)
 
 # Project name and enable CUDA
-project(MyCudaProject LANGUAGES CXX CUDA)
+project(percolation LANGUAGES CXX CUDA)
 
 # Set the CUDA standard (optional)
 set(CMAKE_CUDA_STANDARD 14)
