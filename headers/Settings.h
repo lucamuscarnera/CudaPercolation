@@ -29,6 +29,12 @@ class Settings
 			std::cout << "========== ======== ==========" << std::endl;
 			std::cout << std::endl;
 		}
+
+		// Get struct
+		const auto get_GPU_settings() const
+		{
+			return GPU;
+		}
 	private:
 		struct
 		{

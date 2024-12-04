@@ -9,16 +9,16 @@
 #include <curand.h>
 #include <curand_kernel.h>
 
-__global__ void test_kernel(float * data, int N, int seed)
+__global__ void lattice_populate(float * data, int N, int seed)
 {
 	// declare the state
 	curandState state;
 
-	// retrive the horizontal index
-	int i = threadIdx.x + blockIdx.x * blockDim.x;
+	// retrive the index
+	int i = (threadIdx.x + blockIdx.x * blockDim.x) + N * (threadIdx.y + blockIdx.y * blockDim.y) ;
 
 	// if the index  is valid
-	if(i < N)
+	if(i < (N*N))
 	{
 		// initialize the state
 		curand_init(seed, i, 0 , &state);

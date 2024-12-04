@@ -13,26 +13,29 @@
 class Lattice
 {
 	public:
-		Lattice(int seed)
+		Lattice(int seed,			  // seed of the simulation
+			int N,                            // number of sites (height and width equal)
+			const Settings & settings)	  // constant reference to settings object, that contains information on the simulation
 		:
 		seed(seed)
 		{
-			// launches the kernel with a given seed
-			int N = 1000;
-			cudaMalloc(&grid, N * sizeof(float));
-			test_kernel<<<1,N>>>(grid,N,seed);
+			// retrieves the maximum number of threads ina single block, and construct the partition
+			int threads_one_direction = int(sqrt(settings
+							     .get_GPU_settings()
+							     .max_threads_per_block));
 
-			// retrieve data from the GPU
-			float * local_grid = (float*) malloc( N * sizeof(float));
+			dim3 N_threads(threads_one_direction,
+				       threads_one_direction);
 
-			// copy data from the gpu (grid) into the memory allocated in cpu (local_grid)
-			// the number of bytes to pass is N times the size of a float the "direction"
-			// is from Device (GPU) to Host (CPU)
-			cudaMemcpy(local_grid, grid, N * sizeof(float), cudaMemcpyDeviceToHost);
-			for(int i = 0; i < N;i++)
-			{
-				std::cout << "grid[" << i << "] = " << local_grid[i] << std::endl;
-			}
+			dim3 N_blocks(int(N/threads_one_direction),
+				      int(N/threads_one_direction));
+
+			// initialize  the  global memory region
+			cudaMalloc(&grid, (N * N) * sizeof(float));
+
+			// launch the kernel
+			lattice_populate<<<N_blocks,N_threads>>>(grid,N,seed);
+
 		}
 
 		// changes the order parameter
