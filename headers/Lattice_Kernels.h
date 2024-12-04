@@ -48,4 +48,30 @@ __global__ void lattice_observe(float * lattice_in,
 	}
 }
 
+
+// Assign to every "on" site a number, such that each site has a unique id. The assignement happens populating a portion of memory
+// composed of unsigned int. The kernel reads the lattice produced by  a lattice observation, and assigns
+//
+//                    -> 0               if the site is off
+//                    -> i + 1           if the site is on
+//
+// Conceptually, we can think that we are constructing isolated clusters with only one site, and numbering them from 1 to N^2 + 1
+
+
+__global__ void lattice_assign_id(unsigned char * lattice_in,
+				  unsigned int * lattice_out,
+				  int N)
+{
+	// retrieve index
+        int i = (threadIdx.x + blockIdx.x * blockDim.x) + N * (threadIdx.y + blockIdx.y * blockDim.y) ;
+
+	if(i < (N*N))
+	{
+		if(lattice_in[i] == 1)
+		{
+			lattice_out[i] = i + 1;
+		}
+	}
+}
+
 #endif
