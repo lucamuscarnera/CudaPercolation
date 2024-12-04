@@ -16,13 +16,13 @@ class Settings
 		Settings()
 		{
 			// fill the field of the maximum number of threads per block
-			cudaDeviceGetAttribute(&max_threads_per_block, cudaDevAttrMaxThreadsPerBlock, 0);
+			cudaDeviceGetAttribute(&(GPU.max_threads_per_block), cudaDevAttrMaxThreadsPerBlock, 0);
 		}
 	private:
-		struct GPU
+		struct
 		{
-			unsigned int max_threads_per_block;
-		};
+			int max_threads_per_block;
+		} GPU;
 };
 
 #endif
