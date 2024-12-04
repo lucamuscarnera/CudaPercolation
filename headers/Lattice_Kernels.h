@@ -74,4 +74,55 @@ __global__ void lattice_assign_id(unsigned char * lattice_in,
 	}
 }
 
+
+__global__ void lattice_id_diffusion(unsigned int * lattice, int N)
+{
+        int x = threadIdx.x + blockIdx.x * blockDim.x;
+	int y = threadIdx.y + blockIdx.y * blockDim.y;
+	int i = x + N * y ;
+
+	if( i < (N*N))
+	{
+		// set the base id
+		int id = lattice[i];
+
+		// take the horizontal minimum
+		if( x > 0 )
+		{
+			if(lattice[x - 1] < id)
+			{
+				id = lattice[x - 1];
+			}
+		}
+
+		if( x < N - 1)
+		{
+			if(lattice[x + 1] < id)
+			{
+				id = lattice[x + 1];
+			}
+		}
+
+		// take the vertical minimum
+		if( y > 0 )
+		{
+			if(lattice[y - 1] < id)
+			{
+				id = lattice[y - 1];
+			}
+		}
+
+		if( y < N - 1)
+		{
+			if(lattice[y + 1] < id)
+			{
+				id = lattice[y + 1];
+			}
+		}
+
+		// now id is the minimum in the neighbourhood
+		lattice[i] = id;
+	}
+}
+
 #endif
