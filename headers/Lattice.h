@@ -7,6 +7,7 @@
 // battlefield of the simulation.
 
 #include <iostream>
+#include "Settings.h"
 #include "Lattice_Kernels.h"
 
 class Lattice
