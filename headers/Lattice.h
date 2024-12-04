@@ -6,6 +6,9 @@
 // statistics on the behaviour of the spin, to perform cluster analysis and more. From a conceptual perspective it is the
 // battlefield of the simulation.
 
+
+#include "Lattice_Kernels.h"
+
 class Lattice
 {
 	public:
@@ -14,6 +17,8 @@ class Lattice
 		seed(seed)
 		{
 			// launches the kernel with a given seed
+			int N = 1000;
+			test_kernel<<<1,N>>>(grid,N);
 		}
 
 		// changes the order parameter
@@ -28,9 +33,14 @@ class Lattice
 		{
 			// TODO:  visualization function
 		}
+
 	private:
-		float p;
-		int seed;
+		// metadata of the simulation
+			float p;
+			int seed;
+
+		// data of the simulation
+			float * grid;
 };
 
 #endif
