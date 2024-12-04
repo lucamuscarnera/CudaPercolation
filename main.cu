@@ -3,5 +3,7 @@
 
 int main()
 {
-	Lattice lattice(42);
+	Settings base_settings;
+	base_settings.summary();
+	//Lattice lattice(42);
 }
