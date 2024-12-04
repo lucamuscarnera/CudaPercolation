@@ -3,5 +3,5 @@
 
 int main()
 {
-	std::cout << "Ciao Mondo!" << std::endl;
+	Lattice lattice(42);
 }
