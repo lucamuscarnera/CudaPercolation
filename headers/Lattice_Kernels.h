@@ -39,9 +39,9 @@ __global__ void lattice_observe(float * lattice_in,
 	// retrieve the index
 	int i = (threadIdx.x + blockIdx.x * blockDim.x) + N * (threadIdx.y + blockIdx.y * blockDim.y) ;
 
-	if(i < N)
+	if(i < (N*N))
 	{
-		if(lattice_in[i] > p)
+		if(lattice_in[i] < p)
 		{
 			lattice_out[i] = 1;
 		}
