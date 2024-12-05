@@ -5,7 +5,9 @@ int main()
 {
 	Settings base_settings;
 	base_settings.summary();
-	Lattice lattice(42, 256, base_settings);
+	Lattice lattice(42, 2048, base_settings);
 	// run the simulation
-	lattice.observe(0.4);
+	lattice.observe(0.59);
+
+	std::cout << "End" << std::endl;
 }

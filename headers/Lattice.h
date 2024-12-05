@@ -9,6 +9,35 @@
 #include <iostream>
 #include "Settings.h"
 #include "Lattice_Kernels.h"
+#define _DEBUG_SHOW_AVERAGE_SPIN
+
+
+
+#include <fstream>
+
+void dumpArrayToCSV(const unsigned int* array, size_t size, const std::string& filename) {
+    std::ofstream file(filename);
+
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open file for writing." << std::endl;
+        return;
+    }
+
+    for (size_t i = 0; i < size; ++i) {
+        file << array[i];  // Write the value to the file
+
+        if (i < size - 1) {
+            file << ",";    // Add a comma except after the last element
+        }
+    }
+
+    file << "\n";  // End with a newline
+    file.close();   // Close the file
+
+    std::cout << "Data successfully written to " << filename << std::endl;
+}
+
+
 
 class Lattice
 {
@@ -60,7 +89,29 @@ class Lattice
 			lattice_observe<<< N_blocks, N_threads >>>(threshold_grid,state_grid, N, p);
 			cudaDeviceSynchronize();
 
-			// DEBUG:
+			// call the id assigning kernel
+			unsigned int * id_grid;
+			cudaMalloc(&id_grid, (N*N) * sizeof(unsigned int));
+			lattice_assign_id<<< N_blocks, N_threads >>>(state_grid, id_grid, N);
+
+			// diffusion process
+			for(int i = 0 ; i < 2 * N;i++)
+				lattice_id_diffusion<<< N_blocks, N_threads >>>(id_grid, N);
+				cudaDeviceSynchronize();
+
+			//  save in a file
+                        unsigned int * host_id_grid = (unsigned int *) malloc(sizeof(unsigned int) * (N*N));
+                        cudaMemcpy(host_id_grid,
+                                   id_grid,
+                                   (N*N) * sizeof(unsigned int),
+                                   cudaMemcpyDeviceToHost);
+			dumpArrayToCSV(host_id_grid, N  * N , "dump.csv");
+                        cudaFree(state_grid);
+
+
+
+
+			#ifdef DEBUG_SHOW_AVERAGE_SPIN
 			unsigned char * host_state_grid = (unsigned char *) malloc(sizeof(unsigned char) * (N*N));
 			cudaMemcpy(host_state_grid,
 				   state_grid,
@@ -71,6 +122,8 @@ class Lattice
 				accesi += ((int)(host_state_grid[i] == 1));
 			std:: cout << "the average spin is " << ((float) accesi)/((float) (N*N)) << std::endl;
 			cudaFree(state_grid);
+       			#endif
+
 		}
 
 		// changes the order parameter

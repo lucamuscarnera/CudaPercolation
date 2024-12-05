@@ -84,44 +84,55 @@ __global__ void lattice_id_diffusion(unsigned int * lattice, int N)
 	if( i < (N*N))
 	{
 		// set the base id
-		int id = lattice[i];
+		unsigned int id = lattice[i];
 
-		// take the horizontal minimum
-		if( x > 0 )
+		// if it is associated to an on site
+		if(id != 0)
 		{
-			if(lattice[x - 1] < id)
+			// take the horizontal minimum
+			if( x > 0 )
 			{
-				id = lattice[x - 1];
+				if(lattice[ (x - 1) + N * y] < id)
+					if(lattice[(x - 1) + N * y] != 0)
+					{
+						id = lattice[(x - 1) + N*y];
+					}
 			}
-		}
 
-		if( x < N - 1)
-		{
-			if(lattice[x + 1] < id)
+			if( x < N - 1)
 			{
-				id = lattice[x + 1];
+				if(lattice[(x + 1) + N * y] < id)
+					if(lattice[(x + 1) + N * y] != 0)
+					{
+						id = lattice[(x + 1) + N * y];
+					}
 			}
-		}
 
-		// take the vertical minimum
-		if( y > 0 )
-		{
-			if(lattice[y - 1] < id)
+			// take the vertical minimum
+			if( y > 0 )
 			{
-				id = lattice[y - 1];
+				if(lattice[(y - 1) * N + x] < id)
+					if(lattice[(y - 1) * N + x] != 0)
+					{
+						id = lattice[(y - 1) * N + x];
+					}
 			}
-		}
 
-		if( y < N - 1)
-		{
-			if(lattice[y + 1] < id)
+			if( y < N - 1)
 			{
-				id = lattice[y + 1];
+				if(lattice[(y + 1) * N + x] < id)
+					if(lattice[(y + 1) * N + x] != 0)
+					{
+						id = lattice[(y + 1) * N + x];
+					}
 			}
-		}
 
-		// now id is the minimum in the neighbourhood
-		lattice[i] = id;
+			// now id is the minimum in the neighbourhood
+			// we  dont care too much about write-read  conflicts, since they get "smoothed out"
+			// at convergence
+
+			lattice[i] = id;
+		}
 	}
 }
 
